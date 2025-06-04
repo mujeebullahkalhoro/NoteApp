@@ -1,1 +1,9 @@
 @import "tailwindcss";
+
+.input-base {
+  @apply w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-cyan-500;
+}
+
+.label-base {
+  @apply font-bold bg-gradient-to-r from-teal-400 to-cyan-500 text-transparent bg-clip-text;
+}

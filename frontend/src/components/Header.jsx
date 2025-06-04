@@ -1,23 +1,45 @@
-import React from "react";
+import React, { useState } from "react";
 import logo from "../assets/noteapplogo.png";
 import Button from "./Button";
+import { useNavigate } from "react-router-dom";
+import { Menu, X } from "lucide-react"; // Lucide or any icon library
+
 function Header() {
+  const navigate = useNavigate();
+  const [menuOpen, setMenuOpen] = useState(false);
+
+  const style =
+    "bg-gradient-to-r from-teal-400 to-cyan-500 text-white px-6 py-2 rounded-full shadow-lg hover:scale-105 hover:shadow-xl transition-all duration-300 font-semibold";
+
   return (
-    <header className="flex justify-between items-center w-full px-4 py-2 bg-gray-100 shadow-md">
-      <div className="flex justify-center items-center gap-2 ml-16">
-        <img src={logo} alt="note app" className="w-20 h-20 rounded-full" />
-        <h1 className="text-xl font-bold">NOTE APP</h1>
+    <header className="w-full bg-gray-100 shadow-md p-4">
+      <div className="flex justify-between items-center max-w-6xl mx-auto">
+        {/* Logo Section */}
+        <div className="flex items-center gap-3">
+          <img src={logo} alt="note app" className="w-12 h-12 rounded-full" />
+          <h1 className="text-xl font-bold">NOTE APP</h1>
+        </div>
+
+        {/* Hamburger icon - shown only on small screens */}
+        <div className="md:hidden">
+          <button onClick={() => setMenuOpen(!menuOpen)}>
+            {menuOpen ? <X size={28} /> : <Menu size={28} />}
+          </button>
+        </div>
+
+        <div className="hidden md:flex gap-4">
+          <Button label="Login" style={style} onClick={() => navigate("/login")} />
+          <Button label="Sign Up" style={style} onClick={() => navigate("/signup")} />
+        </div>
       </div>
 
-      <div className="flex gap-4 mr-8">
-        <Button label="Login" />
-        <Button label="Sign UP"/>
-
-
-      </div >
-
-       
      
+      {menuOpen && (
+        <div className="flex flex-col items-center gap-4 mt-4 md:hidden">
+          <Button label="Login" style={style} onClick={() => navigate("/login")} />
+          <Button label="Sign Up" style={style} onClick={() => navigate("/signup")} />
+        </div>
+      )}
     </header>
   );
 }
