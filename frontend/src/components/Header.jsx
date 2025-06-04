@@ -35,7 +35,7 @@ function Header() {
 
      
       {menuOpen && (
-        <div className="flex flex-col items-center gap-4 mt-4 md:hidden">
+        <div className="flex justify-center items-center gap-4 mt-4 md:hidden">
           <Button label="Login" style={style} onClick={() => navigate("/login")} />
           <Button label="Sign Up" style={style} onClick={() => navigate("/signup")} />
         </div>
