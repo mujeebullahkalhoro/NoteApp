@@ -1,10 +1,42 @@
 import React from "react";
 import Button from "./Button";
-import { Link } from "react-router-dom"; // Required if using React Router
+import { Link } from "react-router-dom";
+import { useFormik } from "formik";
+import * as Yup from "yup";
 
 function Login() {
+  const initialValues = {
+    email: "",
+    password: "",
+  };
+
+  const {
+    values,
+    errors,
+    touched,
+    handleSubmit,
+    handleChange,
+    handleBlur,
+  } = useFormik({
+    initialValues: initialValues,
+    validationSchema: Yup.object({
+      email: Yup.string()
+        .email("Invalid email format")
+        .required("Please enter your email"),
+      password: Yup.string()
+        .min(8, "Password must be at least 8 characters")
+        .required("Please enter your password"),
+    }),
+    onSubmit: (values) => {
+      console.log(values);
+    },
+  });
+
   return (
-    <form className="w-11/12 max-w-md mx-auto flex items-center justify-center h-full">
+    <form
+      className="w-11/12 max-w-md mx-auto flex items-center justify-center h-full"
+      onSubmit={handleSubmit}
+    >
       <div className="flex flex-col gap-8 bg-white shadow-md p-8 w-full max-w-md rounded-lg">
         <div>
           <h2 className="text-2xl font-bold bg-gradient-to-r from-teal-400 to-cyan-500 text-transparent bg-clip-text text-center">
@@ -12,16 +44,41 @@ function Login() {
           </h2>
         </div>
 
+        {/* Email Field */}
         <div className="flex flex-col gap-0.5">
           <label className="label-base">Email</label>
-          <input className="input-base" type="email" placeholder="Email" name="email" />
+          <input
+            className="input-base"
+            type="email"
+            placeholder="Email"
+            name="email"
+            onChange={handleChange}
+            onBlur={handleBlur}
+            value={values.email}
+          />
+          {errors.email && touched.email ? (
+            <p className="text-red-500 text-sm">{errors.email}</p>
+          ) : null}
         </div>
 
+        {/* Password Field */}
         <div className="flex flex-col gap-0.5">
           <label className="label-base">Password</label>
-          <input className="input-base" type="password" placeholder="Password" name="password" />
+          <input
+            className="input-base"
+            type="password"
+            placeholder="Password"
+            name="password"
+            onChange={handleChange}
+            onBlur={handleBlur}
+            value={values.password}
+          />
+          {errors.password && touched.password ? (
+            <p className="text-red-500 text-sm">{errors.password}</p>
+          ) : null}
         </div>
 
+        {/* Login Button */}
         <div className="w-full flex justify-center">
           <Button
             label="login"
@@ -32,7 +89,10 @@ function Login() {
         {/* Don't have an account section */}
         <div className="text-center text-sm text-gray-600">
           Don&apos;t have an account yet?{" "}
-          <Link to="/register" className="text-cyan-500 hover:underline font-medium">
+          <Link
+            to="/register"
+            className="text-cyan-500 hover:underline font-medium"
+          >
             Sign up
           </Link>
         </div>

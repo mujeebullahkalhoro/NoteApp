@@ -1,10 +1,45 @@
 import React from "react";
 import Button from "./Button";
 import { Link } from "react-router-dom";
+import { useFormik } from "formik";
+import * as Yup from "yup";
 
 function Signup() {
+  const initialValue = {
+    name: "",
+    email: "",
+    password: "",
+    confirmPassword: "",
+  };
+
+  const { values, handleSubmit, handleChange, handleBlur, errors, touched } =
+    useFormik({
+      initialValues: initialValue,
+      validationSchema: Yup.object({
+        name: Yup.string()
+          .min(2)
+          .max(25)
+          .required("please enter your name"),
+        email: Yup.string()
+          .email()
+          .required("please enter your email"),
+        password: Yup.string()
+          .min(6)
+          .required("please enter your password"),
+        confirmPassword: Yup.string()
+          .required("please confirm your password")
+          .oneOf([Yup.ref("password"), null], "password must match"),
+      }),
+      onSubmit: (value) => {
+        console.log(value);
+      },
+    });
+
   return (
-    <form className="w-11/12 max-w-md mx-auto flex items-center justify-center h-full">
+    <form
+      className="w-11/12 max-w-md mx-auto flex items-center justify-center h-full"
+      onSubmit={handleSubmit}
+    >
       <div className="flex flex-col gap-4 bg-white shadow-md p-8 w-full max-w-md rounded-lg">
         <div>
           <h2 className="text-2xl font-bold bg-gradient-to-r from-teal-400 to-cyan-500 text-transparent bg-clip-text text-center">
@@ -15,25 +50,69 @@ function Signup() {
         {/* Name Field */}
         <div className="flex flex-col gap-0.5">
           <label className="label-base">Name</label>
-          <input className="input-base" type="text" placeholder="Full Name" name="name" />
+          <input
+            className="input-base"
+            type="text"
+            placeholder="Full Name"
+            name="name"
+            onChange={handleChange}
+            onBlur={handleBlur}
+            value={values.name}
+          />
+          {errors.name && touched.name ? (
+            <p className="text-red-500 text-sm">{errors.name}</p>
+          ) : null}
         </div>
 
         {/* Email Field */}
         <div className="flex flex-col gap-0.5">
           <label className="label-base">Email</label>
-          <input className="input-base" type="email" placeholder="Email" name="email" />
+          <input
+            className="input-base"
+            type="email"
+            placeholder="Email"
+            name="email"
+            onChange={handleChange}
+            onBlur={handleBlur}
+            value={values.email}
+          />
+          {errors.email && touched.email ? (
+            <p className="text-red-500 text-sm">{errors.email}</p>
+          ) : null}
         </div>
 
         {/* Password Field */}
         <div className="flex flex-col gap-0.5">
           <label className="label-base">Password</label>
-          <input className="input-base" type="password" placeholder="Password" name="password" />
+          <input
+            className="input-base"
+            type="password"
+            placeholder="Password"
+            name="password"
+            onChange={handleChange}
+            onBlur={handleBlur}
+            value={values.password}
+          />
+          {errors.password && touched.password ? (
+            <p className="text-red-500 text-sm">{errors.password}</p>
+          ) : null}
         </div>
 
         {/* Confirm Password Field */}
         <div className="flex flex-col gap-0.5">
           <label className="label-base">Confirm Password</label>
-          <input className="input-base" type="password" placeholder="Confirm Password" name="confirmPassword" />
+          <input
+            className="input-base"
+            type="password"
+            placeholder="Confirm Password"
+            name="confirmPassword"
+            onChange={handleChange}
+            onBlur={handleBlur}
+            value={values.confirmPassword}
+          />
+          {errors.confirmPassword && touched.confirmPassword ? (
+            <p className="text-red-500 text-sm">{errors.confirmPassword}</p>
+          ) : null}
         </div>
 
         {/* Submit Button */}
