@@ -3,8 +3,10 @@ import Button from "./Button";
 import { Link } from "react-router-dom";
 import { useFormik } from "formik";
 import * as Yup from "yup";
-
+import { useNavigate } from "react-router-dom";
 function Signup() {
+  const navigate = useNavigate();
+
   const initialValue = {
     name: "",
     email: "",
@@ -16,22 +18,42 @@ function Signup() {
     useFormik({
       initialValues: initialValue,
       validationSchema: Yup.object({
-        name: Yup.string()
-          .min(2)
-          .max(25)
-          .required("please enter your name"),
-        email: Yup.string()
-          .email()
-          .required("please enter your email"),
-        password: Yup.string()
-          .min(6)
-          .required("please enter your password"),
+        name: Yup.string().min(2).max(25).required("please enter your name"),
+        email: Yup.string().email().required("please enter your email"),
+        password: Yup.string().min(6).required("please enter your password"),
         confirmPassword: Yup.string()
           .required("please confirm your password")
           .oneOf([Yup.ref("password"), null], "password must match"),
       }),
-      onSubmit: (value) => {
-        console.log(value);
+      onSubmit: async (values, { resetForm }) => {
+        const { name, email, password } = values;
+
+        try {
+          const response = await fetch("http://localhost:5000/user/register", {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify({ name, email, password }),
+            credentials: "include",
+          });
+
+          const data = await response.json();
+
+          if (response.ok) {
+            alert(data.message || "Registration successful!");
+            resetForm();
+            navigate("/");
+          } else {
+            
+            alert(data.message || "Something went wrong. Please try again.");
+            console.error("Server error:", data);
+          }
+        } catch (error) {
+          
+          alert("Unable to connect to server. Please try again later.");
+          console.error("Network error:", error);
+        }
       },
     });
 
@@ -126,7 +148,10 @@ function Signup() {
         {/* Already have an account section */}
         <div className="text-center text-sm text-gray-600">
           Already have an account?{" "}
-          <Link to="/login" className="text-cyan-500 hover:underline font-medium">
+          <Link
+            to="/login"
+            className="text-cyan-500 hover:underline font-medium"
+          >
             Log in
           </Link>
         </div>
