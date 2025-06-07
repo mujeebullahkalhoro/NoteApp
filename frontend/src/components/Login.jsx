@@ -3,8 +3,10 @@ import Button from "./Button";
 import { Link } from "react-router-dom";
 import { useFormik } from "formik";
 import * as Yup from "yup";
+import {useNavigate} from 'react-router-dom'
 
 function Login() {
+  const navigate=useNavigate();
   const initialValues = {
     email: "",
     password: "",
@@ -27,8 +29,31 @@ function Login() {
         .min(8, "Password must be at least 8 characters")
         .required("Please enter your password"),
     }),
-    onSubmit: (values) => {
-      console.log(values);
+    onSubmit: async (values, { setSubmitting, setErrors }) => {
+      try {
+        const res = await fetch("http://localhost:5000/user/login", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          credentials: "include", // <== Important to send/receive cookies
+          body: JSON.stringify(values),
+        });
+
+        const data = await res.json();
+
+        if (!res.ok) {
+          throw new Error(data.message || "Login failed");
+        }
+
+        
+        navigate("/dashboard");
+      } catch (error) {
+        console.error("Login error:", error.message);
+        setErrors({ password: "Invalid email or password" });
+      } finally {
+        setSubmitting(false);
+      }
     },
   });
 

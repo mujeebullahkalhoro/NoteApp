@@ -43,7 +43,7 @@ function Signup() {
           if (response.ok) {
             alert(data.message || "Registration successful!");
             resetForm();
-            navigate("/");
+            navigate("/dashboard");
           } else {
             
             alert(data.message || "Something went wrong. Please try again.");

@@ -14,13 +14,13 @@ function Header() {
   return (
     <header className="w-full bg-gray-100 shadow-md p-4">
       <div className="flex justify-between items-center max-w-6xl mx-auto">
-        {/* Logo Section */}
+        
         <div className="flex items-center gap-3">
           <img src={logo} alt="note app" className="w-12 h-12 rounded-full" />
           <h1 className="text-xl font-bold">NOTE APP</h1>
         </div>
 
-        {/* Hamburger icon - shown only on small screens */}
+        
         <div className="md:hidden">
           <button onClick={() => setMenuOpen(!menuOpen)}>
             {menuOpen ? <X size={28} /> : <Menu size={28} />}
