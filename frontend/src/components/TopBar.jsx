@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { LogOut, User, Sun, Menu, X } from 'lucide-react';
 import SearchBar from './SearchBar';
+import NoteModal from './NoteModal';
 
 const gradientButtonStyle =
   "bg-gradient-to-r from-teal-400 to-cyan-500 text-white px-4 py-2 rounded-md shadow-md hover:scale-105 hover:shadow-lg transition-all duration-300 font-medium flex items-center gap-1 whitespace-nowrap select-none text-sm";
@@ -11,23 +12,43 @@ function TopBar({ searchValue, onSearchChange }) {
   const [title, setTitle] = useState('');
   const [content, setContent] = useState('');
 
-  const handleSave = () => {
-    console.log('Note saved:', { title, content });
-    
-    setTitle('');
-    setContent('');
-    setShowModal(false);
+  const handleSave = async () => {
+    if (!title.trim() || !content.trim()) return;
+
+    try {
+      const response = await fetch('http://localhost:5000/note', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ title, content }),
+        credentials: 'include',
+      });
+
+      if (!response.ok) {
+        const errorData = await response.json();
+        console.error('Error:', errorData.message);
+        return;
+      }
+
+      const savedNote = await response.json();
+      console.log('Note saved:', savedNote);
+
+      setTitle('');
+      setContent('');
+      setShowModal(false);
+    } catch (err) {
+      console.error('Failed to save note:', err);
+    }
   };
 
   return (
     <header className="w-full bg-gray-100 shadow-md px-4 sm:px-6 py-3 h-20">
       <div className="flex items-center justify-between h-full">
-        
         <div className="flex-grow">
           <SearchBar value={searchValue} onChange={onSearchChange} />
         </div>
 
-        
         <nav className="hidden sm:flex items-center gap-4 ml-4">
           <button
             onClick={() => setShowModal(true)}
@@ -62,7 +83,6 @@ function TopBar({ searchValue, onSearchChange }) {
           </button>
         </nav>
 
-        
         <button
           aria-label="Toggle menu"
           className="sm:hidden ml-4 text-gray-600 hover:text-teal-500 focus:outline-none focus:ring-2 focus:ring-teal-400 rounded p-2 transition-colors duration-200"
@@ -72,7 +92,6 @@ function TopBar({ searchValue, onSearchChange }) {
         </button>
       </div>
 
-      
       {menuOpen && (
         <nav className="sm:hidden mt-3 flex flex-col gap-3 px-2">
           <button
@@ -111,45 +130,19 @@ function TopBar({ searchValue, onSearchChange }) {
         </nav>
       )}
 
-    {showModal && (
-    <div className="fixed inset-0 z-50   flex items-center justify-center">
-    <div className="bg-white rounded-xl shadow-2xl w-full max-w-md p-6 mx-2 transform transition-all duration-300 scale-100 animate-fade-in">
-      <h2 className="text-xl font-semibold mb-4 text-gray-800">Add New Note</h2>
-
-      <input
-        type="text"
-        value={title}
-        onChange={(e) => setTitle(e.target.value)}
-        placeholder="Title"
-        className="w-full mb-3 px-4 py-2 border border-gray-200 rounded-md focus:outline-none focus:ring-2 focus:ring-teal-400"
+  
+      <NoteModal
+        showModal={showModal}
+        setShowModal={setShowModal}
+        title={title}
+        setTitle={setTitle}
+        content={content}
+        setContent={setContent}
+        handleSave={handleSave}
+        handleUpdate={() => {}}   
+        editingNote={null}       
+        setEditingNote={() => {}} 
       />
-
-      <textarea
-        value={content}
-        onChange={(e) => setContent(e.target.value)}
-        placeholder="Content"
-        rows="4"
-        className="w-full resize-none  mb-3 px-4 py-2 border border-gray-200  rounded-md focus:outline-none focus:ring-2 focus:ring-teal-400"
-      />
-
-      <div className="flex justify-end gap-2">
-        <button
-          onClick={() => setShowModal(false)}
-          className="px-4 py-2 bg-gray-300 rounded-md hover:bg-gray-400 transition"
-        >
-          Cancel
-        </button>
-        <button
-          onClick={handleSave}
-          className="px-4 py-2 bg-teal-500 text-white rounded-md hover:bg-teal-600 transition"
-        >
-          Save
-        </button>
-      </div>
-    </div>
-  </div>
-)}
-
     </header>
   );
 }

@@ -3,7 +3,7 @@ import Signup from '../components/SignUp';
 import Login from '../components/Login';
 import Layout from '../layouts/layout'; 
 import DashboardLayout from '../layouts/DashboardLayout';
-
+import NotesPage from '../pages/NotePage';
 
 const router = createBrowserRouter([
   {
@@ -26,6 +26,11 @@ const router = createBrowserRouter([
   {
     path: '/dashboard',
     element: <DashboardLayout />,
+    children:[{
+
+      path:'AllNotes',
+      element:<NotesPage/>
+    }]
    
   },
 ]);

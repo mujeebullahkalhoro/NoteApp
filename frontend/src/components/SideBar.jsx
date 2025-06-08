@@ -34,7 +34,7 @@ function SideBar() {
 
       
       <nav className="flex flex-col gap-2 p-4 text-base font-medium">
-        <SidebarLink to="/dashboard" label="All Notes" icon={<Book size={20} />} isOpen={isOpen} />
+        <SidebarLink to="/dashboard/AllNotes" label="All Notes" icon={<Book size={20} />} isOpen={isOpen} />
         <SidebarLink to="/dashboard/favorites" label="Favorites" icon={<Star size={20} />} isOpen={isOpen} />
         <SidebarLink to="/dashboard/settings" label="Settings" icon={<Settings size={20} />} isOpen={isOpen} />
       </nav>

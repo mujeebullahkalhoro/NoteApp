@@ -28,14 +28,13 @@ const registerUser = async (req, res) => {
 const loginUser = async (req, res) => {
   try {
     const { email, password } = req.body;
-    const user = await User.findOne({ email });  
+    const user = await User.findOne({ email });
 
     if (!user) {
       return res.status(401).json({ message: "Email or password is invalid" });
     }
 
     const passwordMatch = await bcrypt.compare(password, user.password);
-
     if (!passwordMatch) {
       return res.status(401).json({ message: "Email or password is invalid" });
     }
@@ -52,25 +51,29 @@ const loginUser = async (req, res) => {
       { expiresIn: "7d" }
     );
 
+    const isProduction = process.env.NODE_ENV === "production";
+
     res.cookie("accessToken", accessToken, {
       httpOnly: true,
-      secure: true,
-      sameSite: "Strict",
-      maxAge: 60 * 60 * 1000, 
+      secure: isProduction,            // ✅ true in production, false in dev
+      sameSite: isProduction ? "Strict" : "Lax", 
+      maxAge: 60 * 60 * 1000,
     });
 
     res.cookie("refreshToken", refreshToken, {
       httpOnly: true,
-      secure: true,
-      sameSite: "Strict",
-      maxAge: 7 * 24 * 60 * 60 * 1000, 
+      secure: isProduction,
+      sameSite: isProduction ? "Strict" : "Lax",
+      maxAge: 7 * 24 * 60 * 60 * 1000,
     });
 
-    res.status(200).json({ id: user._id, name: user.name, email: user.email });
+    return res.status(200).json({ id: user._id, name: user.name, email: user.email });
   } catch (error) {
     return res.status(500).json({ message: "Server error", error: error.message });
   }
 };
+
+
 
 const refreshAccessToken = (req, res) => {
   const refreshToken = req.cookies.refreshToken;
@@ -88,11 +91,13 @@ const refreshAccessToken = (req, res) => {
       { expiresIn: "1h" }
     );
 
+    const isProduction = process.env.NODE_ENV === "production";
+
     res.cookie("accessToken", accessToken, {
       httpOnly: true,
-      secure: true,
-      sameSite: "Strict",
-      maxAge: 60 * 60 * 1000, 
+      secure: isProduction,         
+      sameSite: isProduction ? "Strict" : "Lax",
+      maxAge: 60 * 60 * 1000,
     });
 
     return res.status(200).json({ message: "Access token refreshed" });
