@@ -55,7 +55,7 @@ const loginUser = async (req, res) => {
 
     res.cookie("accessToken", accessToken, {
       httpOnly: true,
-      secure: isProduction,            // ✅ true in production, false in dev
+      secure: isProduction,      
       sameSite: isProduction ? "Strict" : "Lax", 
       maxAge: 60 * 60 * 1000,
     });
@@ -106,10 +106,30 @@ const refreshAccessToken = (req, res) => {
   }
 };
 
+const getUser = async (req, res) => {
+  try {
+    const accessToken = req.cookies.accessToken;
+
+    if (!accessToken) {
+      return res.status(401).json({ message: "Access token missing" });
+    }
+
+    const decoded = jwt.verify(accessToken, process.env.JWT_SECRET);
+    const user = await User.findById(decoded.userId).select("-password");
+
+    if (!user) {
+      return res.status(404).json({ message: "User not found" });
+    }
+
+    res.status(200).json(user);
+  } catch (error) {
+    res.status(401).json({ message: "Invalid token", error: error.message });
+  }
+};
 const logoutUser = (req, res) => {
   res.clearCookie("accessToken");
   res.clearCookie("refreshToken");
   res.status(200).json({ message: "Logged out successfully" });
 };
 
-export { registerUser, loginUser, refreshAccessToken, logoutUser };
+export { registerUser, loginUser, refreshAccessToken, logoutUser ,getUser };

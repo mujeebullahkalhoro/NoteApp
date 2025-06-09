@@ -1,4 +1,3 @@
-
 import mongoose from 'mongoose';
 
 const noteSchema = new mongoose.Schema(
@@ -16,6 +15,14 @@ const noteSchema = new mongoose.Schema(
       type: mongoose.Schema.Types.ObjectId,
       ref: 'User', 
       required: true,
+    },
+    favorite: {
+      type: Boolean,
+      default: false,
+    },
+    important: {
+      type: Boolean,
+      default: false,
     },
   },
   {

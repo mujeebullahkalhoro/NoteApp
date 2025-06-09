@@ -4,6 +4,8 @@ import Login from '../components/Login';
 import Layout from '../layouts/layout'; 
 import DashboardLayout from '../layouts/DashboardLayout';
 import NotesPage from '../pages/NotePage';
+import FavoritePage from '../pages/FavoritePage';   // create this component
+import ImportantPage from '../pages/ImportantPage';   // create this component
 
 const router = createBrowserRouter([
   {
@@ -18,20 +20,26 @@ const router = createBrowserRouter([
         path: 'signup',
         element: <Signup />,
       },
-  
     ],
   },
 
-  
   {
     path: '/dashboard',
     element: <DashboardLayout />,
-    children:[{
-
-      path:'AllNotes',
-      element:<NotesPage/>
-    }]
-   
+    children: [
+      {
+        path: 'AllNotes',
+        element: <NotesPage />,
+      },
+      {
+        path: 'favorites',
+        element: <FavoritePage />,
+      },
+      {
+        path: 'important',
+        element: <ImportantPage />,
+      },
+    ],
   },
 ]);
 
