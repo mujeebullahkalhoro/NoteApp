@@ -1,12 +1,11 @@
 import React from "react";
 import Button from "./Button";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { useFormik } from "formik";
 import * as Yup from "yup";
-import {useNavigate} from 'react-router-dom'
 
 function Login() {
-  const navigate=useNavigate();
+  const navigate = useNavigate();
   const initialValues = {
     email: "",
     password: "",
@@ -36,7 +35,7 @@ function Login() {
           headers: {
             "Content-Type": "application/json",
           },
-          credentials: "include", // <== Important to send/receive cookies
+          credentials: "include",
           body: JSON.stringify(values),
         });
 
@@ -46,7 +45,6 @@ function Login() {
           throw new Error(data.message || "Login failed");
         }
 
-        
         navigate("/dashboard");
       } catch (error) {
         console.error("Login error:", error.message);
@@ -101,6 +99,15 @@ function Login() {
           {errors.password && touched.password ? (
             <p className="text-red-500 text-sm">{errors.password}</p>
           ) : null}
+          {/* Forgot Password Link */}
+          <div className="text-right text-sm mt-1">
+            <Link
+              to="/forgot-password"
+              className="text-cyan-500 hover:underline"
+            >
+              Forgot password?
+            </Link>
+          </div>
         </div>
 
         {/* Login Button */}

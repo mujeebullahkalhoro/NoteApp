@@ -3,15 +3,14 @@ import NoteCard from '../components/NoteCard';
 import NoteModal from '../components/NoteModal';
 import { useOutletContext } from 'react-router-dom';
 
-function NotesPage() {
-  const { search, notes, setNotes } = useOutletContext(); 
+function NotePage() {
+  const { search, notes, setNotes } = useOutletContext();
   const [showModal, setShowModal] = useState(false);
   const [editingNote, setEditingNote] = useState(null);
   const [title, setTitle] = useState('');
   const [content, setContent] = useState('');
 
   useEffect(() => {
-    // Moved fetchNotes inside useEffect to avoid missing dependency warning
     const fetchNotes = async () => {
       try {
         const response = await fetch('http://localhost:5000/note', {
@@ -25,7 +24,7 @@ function NotesPage() {
         }
 
         const data = await response.json();
-        setNotes(data); 
+        setNotes(data);
       } catch (err) {
         console.error('Error fetching notes:', err);
       }
@@ -46,7 +45,7 @@ function NotesPage() {
         return;
       }
 
-      setNotes((prev) => prev.filter((note) => note._id !== id)); 
+      setNotes((prev) => prev.filter((note) => note._id !== id));
     } catch (error) {
       console.error('Error deleting note:', error);
     }
@@ -63,7 +62,7 @@ function NotesPage() {
   };
 
   const handleUpdate = async () => {
-    if (!title.trim() || !content.trim()) return;
+    if (!editingNote || !title.trim() || !content.trim()) return;
 
     try {
       const response = await fetch(`http://localhost:5000/note/${editingNote._id}`, {
@@ -84,12 +83,35 @@ function NotesPage() {
         prevNotes.map((note) => (note._id === updatedNote._id ? updatedNote : note))
       );
 
-      setShowModal(false);
-      setEditingNote(null);
-      setTitle('');
-      setContent('');
+      closeModal();
     } catch (err) {
       console.error('Failed to update note:', err);
+    }
+  };
+
+  // OPTIONAL: handle new note creation if needed
+  const handleSave = async () => {
+    if (!title.trim() || !content.trim()) return;
+
+    try {
+      const response = await fetch('http://localhost:5000/note', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        credentials: 'include',
+        body: JSON.stringify({ title, content }),
+      });
+
+      if (!response.ok) {
+        const errorData = await response.json();
+        console.error('Error saving note:', errorData.message);
+        return;
+      }
+
+      const newNote = await response.json();
+      setNotes((prevNotes) => [...prevNotes, newNote]);
+      closeModal();
+    } catch (err) {
+      console.error('Failed to save note:', err);
     }
   };
 
@@ -134,6 +156,13 @@ function NotesPage() {
     note.content.toLowerCase().includes(search.toLowerCase())
   );
 
+  const closeModal = () => {
+    setShowModal(false);
+    setEditingNote(null);
+    setTitle('');
+    setContent('');
+  };
+
   return (
     <>
       <div className="p-4 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
@@ -161,11 +190,11 @@ function NotesPage() {
         setContent={setContent}
         editingNote={editingNote}
         setEditingNote={setEditingNote}
-        handleSave={() => {}}
+        handleSave={handleSave}
         handleUpdate={handleUpdate}
       />
     </>
   );
 }
 
-export default NotesPage;
+export default NotePage;

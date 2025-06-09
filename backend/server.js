@@ -4,7 +4,7 @@ import userRoutes from './routes/userRoutes.js';
 import noteRoutes from './routes/noteRoutes.js';
 import cors from 'cors';
 import cookieParser from "cookie-parser";
-
+import "./utils/reminderJob.js";
 connectDb();
 
 const app = express();

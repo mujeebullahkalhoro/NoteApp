@@ -7,10 +7,12 @@ import { Outlet } from 'react-router-dom';
 function DashboardLayout() {
   const [search, setSearch] = useState('');
   const [notes, setNotes] = useState([]);
+  const [isMobile, setIsMobile] = useState(window.innerWidth < 640);
+
   const navigate = useNavigate();
 
+  // Auth check
   useEffect(() => {
-
     fetch('http://localhost:5000/user/auth/', {
       method: 'GET',
       credentials: 'include',
@@ -26,7 +28,7 @@ function DashboardLayout() {
       });
   }, [navigate]);
 
-  
+  // Fetch notes
   useEffect(() => {
     const fetchNotes = async () => {
       try {
@@ -44,21 +46,47 @@ function DashboardLayout() {
     fetchNotes();
   }, []);
 
-  // Add new note to state
+  // Handle responsive layout
+  useEffect(() => {
+    const handleResize = () => {
+      const mobile = window.innerWidth < 640;
+      setIsMobile(mobile);
+    };
+    window.addEventListener('resize', handleResize);
+    return () => window.removeEventListener('resize', handleResize);
+  }, []);
+
   const addNoteToState = (newNote) => {
     setNotes((prev) => [newNote, ...prev]);
   };
 
   return (
-    <div className="flex h-screen">
-      <SideBar />
-      <div className="flex flex-col flex-1">
-        <TopBar
-          searchValue={search}
-          onSearchChange={(e) => setSearch(e.target.value)}
-          addNoteToState={addNoteToState}
-        />
-        <main className="p-4 overflow-y-auto">
+    <div className="flex h-screen overflow-hidden">
+      
+      <SideBar isMobile={isMobile} />
+
+      
+      <div
+        className={`
+          flex flex-col flex-1 w-0 transition-all duration-300
+          ${isMobile ? 'ml-16' : 'ml-16 sm:ml-20 md:ml-64'}
+        `}
+      >
+        {/* Top Bar */}
+        <div className="flex items-center justify-between p-4 shadow-md bg-white">
+          
+          <div className="flex-grow" />
+
+          {/* Search + Add Note */}
+          <TopBar
+            searchValue={search}
+            onSearchChange={(e) => setSearch(e.target.value)}
+            addNoteToState={addNoteToState}
+          />
+        </div>
+
+        {/* Main Content */}
+        <main className="flex-1 overflow-y-auto p-4 bg-gray-50">
           <Outlet context={{ search, notes, setNotes }} />
         </main>
       </div>

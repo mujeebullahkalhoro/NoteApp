@@ -128,7 +128,7 @@ const getUser = async (req, res) => {
 };
 const logoutUser = (req, res) => {
   res.clearCookie("accessToken");
-  res.clearCookie("refreshToken");
+
   res.status(200).json({ message: "Logged out successfully" });
 };
 

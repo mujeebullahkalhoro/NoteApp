@@ -7,18 +7,21 @@ const NoteModal = ({
   setTitle,
   content,
   setContent,
+  reminder,
+  setReminder,
   handleSave,
   handleUpdate,
-  editingNote = null,         
-  setEditingNote = () => {},  
+  editingNote = null,
+  setEditingNote = () => {},
 }) => {
   if (!showModal) return null;
 
   const handleClose = () => {
     setShowModal(false);
-    setEditingNote(null); 
+    setEditingNote(null);
     setTitle("");
     setContent("");
+    setReminder(""); 
   };
 
   return (
@@ -42,6 +45,15 @@ const NoteModal = ({
           placeholder="Content"
           rows="4"
           className="w-full resize-none mb-3 px-4 py-2 border border-gray-200 rounded-md focus:outline-none focus:ring-2 focus:ring-teal-400"
+        />
+
+        
+        <label className="block text-sm text-gray-700 mb-1">Reminder (optional)</label>
+        <input
+          type="datetime-local"
+          value={reminder}
+          onChange={(e) => setReminder(e.target.value)}
+          className="w-full mb-4 px-4 py-2 border border-gray-200 rounded-md focus:outline-none focus:ring-2 focus:ring-teal-400"
         />
 
         <div className="flex justify-end gap-2">

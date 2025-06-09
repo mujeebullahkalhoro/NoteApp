@@ -24,9 +24,17 @@ const noteSchema = new mongoose.Schema(
       type: Boolean,
       default: false,
     },
+    reminderAt: {
+      type: Date,
+      default: null,
+    },
+    reminderSent: {
+      type: Boolean,
+      default: false,
+    },
   },
   {
-    timestamps: true, 
+    timestamps: true,
   }
 );
 
