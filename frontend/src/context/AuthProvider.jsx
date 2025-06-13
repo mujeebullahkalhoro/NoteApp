@@ -1,13 +1,13 @@
 import { useState, useEffect } from "react";
 import { AuthContext } from "./AuthContext";
-
+import { fetchWithRefresh } from "../utils/fetchWithRefresh";
 export const AuthProvider = ({ children }) => {
   const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(true);
 
   const getUser = async () => {
     try {
-      const res = await fetch("http://localhost:5000/user/me", {
+      const res = await fetchWithRefresh("http://localhost:5000/user/me", {
         credentials: "include",
       });
       if (res.ok) {

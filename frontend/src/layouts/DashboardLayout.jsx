@@ -3,7 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import TopBar from '../components/TopBar';
 import SideBar from '../components/SideBar';
 import { Outlet } from 'react-router-dom';
-
+import { fetchWithRefresh } from '../utils/fetchWithRefresh';
 function DashboardLayout() {
   const [search, setSearch] = useState('');
   const [notes, setNotes] = useState([]);
@@ -11,28 +11,33 @@ function DashboardLayout() {
 
   const navigate = useNavigate();
 
-  // Auth check
+ 
   useEffect(() => {
-    fetch('http://localhost:5000/user/auth/', {
-      method: 'GET',
-      credentials: 'include',
-    })
-      .then((res) => {
-        if (res.status === 401) {
-          navigate('/login');
-        }
-      })
-      .catch((error) => {
-        console.error('Failed to verify auth:', error);
-        navigate('/login');
+  const checkAuth = async () => {
+    try {
+      const res = await fetchWithRefresh('http://localhost:5000/user/me', {
+        method: 'GET',
       });
-  }, [navigate]);
+
+      if (!res.ok) {
+        throw new Error('Unauthorized');
+      }
+
+
+    } catch (error) {
+      console.error('Failed to verify auth:', error);
+      navigate('/login');
+    }
+  };
+
+  checkAuth();
+}, [navigate]);
 
   // Fetch notes
   useEffect(() => {
     const fetchNotes = async () => {
       try {
-        const res = await fetch('http://localhost:5000/note', {
+        const res = await fetchWithRefresh('http://localhost:5000/note', {
           method: 'GET',
           credentials: 'include',
         });
@@ -46,7 +51,7 @@ function DashboardLayout() {
     fetchNotes();
   }, []);
 
-  // Handle responsive layout
+  
   useEffect(() => {
     const handleResize = () => {
       const mobile = window.innerWidth < 640;

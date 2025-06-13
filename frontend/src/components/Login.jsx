@@ -4,6 +4,7 @@ import { Link, useNavigate } from "react-router-dom";
 import { useFormik } from "formik";
 import * as Yup from "yup";
 import { useAuth } from "../hooks/useAuth"; 
+import { fetchWithRefresh } from "../utils/fetchWithRefresh";
 
 function Login() {
   const navigate = useNavigate();
@@ -34,7 +35,7 @@ function Login() {
     }),
     onSubmit: async (values, { setSubmitting, setErrors }) => {
       try {
-        const res = await fetch("http://localhost:5000/user/login", {
+        const res = await fetchWithRefresh("http://localhost:5000/user/login", {
           method: "POST",
           headers: {
             "Content-Type": "application/json",

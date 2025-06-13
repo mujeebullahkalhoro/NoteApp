@@ -4,6 +4,7 @@ import { Link } from "react-router-dom";
 import { useFormik } from "formik";
 import * as Yup from "yup";
 import { useNavigate } from "react-router-dom";
+import { fetchWithRefresh } from "../utils/fetchWithRefresh";
 function Signup() {
   const navigate = useNavigate();
 
@@ -29,7 +30,7 @@ function Signup() {
         const { name, email, password } = values;
 
         try {
-          const response = await fetch("http://localhost:5000/user/register", {
+          const response = await fetchWithRefresh("http://localhost:5000/user/register", {
             method: "POST",
             headers: {
               "Content-Type": "application/json",

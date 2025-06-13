@@ -16,8 +16,9 @@ router.post('/register', registerUser);
 router.post('/login', loginUser);
 router.post('/refresh-token', refreshAccessToken);
 router.post('/logout', logoutUser);
-router.get('/me', authenticateUser, getUser);
+router.get('/me', authenticateUser, getUser); // used to check if user is logged in
 router.post('/forgot-password', forgotPassword);
 router.post('/reset-password', resetPassword);
+
 
 export default router;

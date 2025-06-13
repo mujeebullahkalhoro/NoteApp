@@ -1,13 +1,13 @@
 import React, { useEffect, useState } from 'react';
 import NoteCard from '../components/NoteCard';
-
+import { fetchWithRefresh } from '../utils/fetchWithRefresh';
 function FilteredNotesPage({ filterKey }) {
   const [notes, setNotes] = useState([]);
   
   useEffect(() => {
     const fetchNotes = async () => {
       try {
-        const response = await fetch('http://localhost:5000/note', {
+        const response = await fetchWithRefresh('http://localhost:5000/note', {
           method: 'GET',
           credentials: 'include',
         });
@@ -29,7 +29,7 @@ function FilteredNotesPage({ filterKey }) {
 
   const handleDelete = async (id) => {
     try {
-      const response = await fetch(`http://localhost:5000/note/${id}`, {
+      const response = await fetchWithRefresh(`http://localhost:5000/note/${id}`, {
         method: 'DELETE',
         credentials: 'include',
       });
@@ -48,7 +48,7 @@ function FilteredNotesPage({ filterKey }) {
   const toggleFlag = async (note, key) => {
     try {
       const updatedValue = !note[key];
-      const response = await fetch(`http://localhost:5000/note/${note._id}`, {
+      const response = await fetchWithRefresh(`http://localhost:5000/note/${note._id}`, {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
         credentials: 'include',

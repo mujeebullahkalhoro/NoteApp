@@ -3,7 +3,7 @@ import { LogOut, User, Menu, X } from "lucide-react";
 import SearchBar from "./SearchBar";
 import NoteModal from "./NoteModal";
 import { useNavigate } from "react-router-dom";
-
+import { fetchWithRefresh } from "../utils/fetchWithRefresh";
 const gradientButtonStyle =
   "bg-gradient-to-r from-teal-400 to-cyan-500 text-white px-3 py-1.5 rounded-md shadow-md hover:scale-105 hover:shadow-lg transition-all duration-300 font-medium flex items-center gap-1 whitespace-nowrap text-sm";
 
@@ -19,7 +19,7 @@ function TopBar({ searchValue, onSearchChange, addNoteToState }) {
   useEffect(() => {
     const fetchUser = async () => {
       try {
-        const res = await fetch("http://localhost:5000/user/me", {
+        const res = await fetchWithRefresh("http://localhost:5000/user/me", {
           credentials: "include",
         });
         if (res.ok) {
@@ -36,7 +36,7 @@ function TopBar({ searchValue, onSearchChange, addNoteToState }) {
   const handleSave = async () => {
     if (!title.trim() || !content.trim()) return;
     try {
-      const response = await fetch("http://localhost:5000/note", {
+      const response = await fetchWithRefresh("http://localhost:5000/note", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         credentials: "include",
@@ -63,7 +63,7 @@ function TopBar({ searchValue, onSearchChange, addNoteToState }) {
 
   const handleLogout = async () => {
     try {
-      const response = await fetch("http://localhost:5000/user/logout", {
+      const response = await fetchWithRefresh("http://localhost:5000/user/logout", {
         method: "POST",
         credentials: "include",
       });
