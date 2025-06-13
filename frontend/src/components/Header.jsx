@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import logo from "../assets/noteapplogo.png";
 import Button from "./Button";
 import { useNavigate } from "react-router-dom";
-import { Menu, X } from "lucide-react"; // Lucide or any icon library
+import { Menu, X } from "lucide-react"; 
 
 function Header() {
   const navigate = useNavigate();

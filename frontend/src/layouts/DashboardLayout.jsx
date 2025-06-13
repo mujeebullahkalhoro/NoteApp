@@ -61,7 +61,7 @@ function DashboardLayout() {
   };
 
   return (
-    <div className="flex h-screen overflow-hidden">
+    <div className="flex h-screen  overflow-hidden">
       
       <SideBar isMobile={isMobile} />
 
@@ -86,7 +86,7 @@ function DashboardLayout() {
         </div>
 
         {/* Main Content */}
-        <main className="flex-1 overflow-y-auto p-4 bg-gray-50">
+        <main className="flex-1 overflow-y-auto p-4 bg-white">
           <Outlet context={{ search, notes, setNotes }} />
         </main>
       </div>

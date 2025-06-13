@@ -89,7 +89,7 @@ function NotePage() {
     }
   };
 
-  // OPTIONAL: handle new note creation if needed
+ 
   const handleSave = async () => {
     if (!title.trim() || !content.trim()) return;
 
@@ -165,7 +165,7 @@ function NotePage() {
 
   return (
     <>
-      <div className="p-4 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
+      <div className="p-4 bg-white grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
         {filteredNotes.map((note) => (
           <NoteCard
             key={note._id}

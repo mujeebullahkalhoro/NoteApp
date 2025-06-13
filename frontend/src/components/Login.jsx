@@ -3,9 +3,12 @@ import Button from "./Button";
 import { Link, useNavigate } from "react-router-dom";
 import { useFormik } from "formik";
 import * as Yup from "yup";
+import { useAuth } from "../hooks/useAuth"; 
 
 function Login() {
   const navigate = useNavigate();
+  const { getUser } = useAuth(); 
+
   const initialValues = {
     email: "",
     password: "",
@@ -18,8 +21,9 @@ function Login() {
     handleSubmit,
     handleChange,
     handleBlur,
+    isSubmitting,
   } = useFormik({
-    initialValues: initialValues,
+    initialValues,
     validationSchema: Yup.object({
       email: Yup.string()
         .email("Invalid email format")
@@ -45,6 +49,7 @@ function Login() {
           throw new Error(data.message || "Login failed");
         }
 
+        await getUser(); 
         navigate("/dashboard");
       } catch (error) {
         console.error("Login error:", error.message);
@@ -79,9 +84,9 @@ function Login() {
             onBlur={handleBlur}
             value={values.email}
           />
-          {errors.email && touched.email ? (
+          {errors.email && touched.email && (
             <p className="text-red-500 text-sm">{errors.email}</p>
-          ) : null}
+          )}
         </div>
 
         {/* Password Field */}
@@ -92,14 +97,14 @@ function Login() {
             type="password"
             placeholder="Password"
             name="password"
+            autoComplete="current-password"
             onChange={handleChange}
             onBlur={handleBlur}
             value={values.password}
           />
-          {errors.password && touched.password ? (
+          {errors.password && touched.password && (
             <p className="text-red-500 text-sm">{errors.password}</p>
-          ) : null}
-          {/* Forgot Password Link */}
+          )}
           <div className="text-right text-sm mt-1">
             <Link
               to="/forgot-password"
@@ -113,16 +118,16 @@ function Login() {
         {/* Login Button */}
         <div className="w-full flex justify-center">
           <Button
-            label="login"
+            label={isSubmitting ? "Logging in..." : "Login"}
             style="w-full bg-gradient-to-r from-teal-400 to-cyan-500 text-white px-6 py-2 rounded-md shadow-lg hover:scale-105 hover:shadow-xl transition-all duration-300 font-semibold"
+            disabled={isSubmitting}
           />
         </div>
 
-        {/* Don't have an account section */}
         <div className="text-center text-sm text-gray-600">
           Don&apos;t have an account yet?{" "}
           <Link
-            to="/register"
+            to="/signup"
             className="text-cyan-500 hover:underline font-medium"
           >
             Sign up

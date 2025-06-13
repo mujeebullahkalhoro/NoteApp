@@ -80,15 +80,12 @@ function TopBar({ searchValue, onSearchChange, addNoteToState }) {
   };
 
   return (
-    <header className="w-full bg-gray-100 shadow px-4 py-3">
-
+    <header className="w-full bg-gray-100 shadow-md px-4 py-3">
       <div className="flex flex-wrap items-center justify-between gap-2 md:gap-4">
         {/* User Info */}
-        <div className="flex items-center gap-2 text-gray-700 min-w-[120px]">
+        <div className="flex items-center gap-2 text-gray-700">
           <User size={20} className="text-gray-500 shrink-0" />
-          <span className="text-sm font-medium truncate max-w-[120px] md:max-w-[160px]">
-            {user?.name || "User"}
-          </span>
+          <span className="text-sm font-medium">{user?.name || "User"}</span>
         </div>
 
         {/* Search Bar */}
@@ -109,7 +106,6 @@ function TopBar({ searchValue, onSearchChange, addNoteToState }) {
           </button>
         </div>
 
-      
         <button
           className="md:hidden p-2 text-gray-600 hover:text-teal-500 shrink-0"
           onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
@@ -118,7 +114,6 @@ function TopBar({ searchValue, onSearchChange, addNoteToState }) {
         </button>
       </div>
 
-      {/* Mobile Menu Dropdown */}
       {mobileMenuOpen && (
         <div className="md:hidden mt-3 flex flex-col gap-2">
           <button
@@ -136,7 +131,6 @@ function TopBar({ searchValue, onSearchChange, addNoteToState }) {
         </div>
       )}
 
-      {/* Note Modal */}
       <NoteModal
         showModal={showModal}
         setShowModal={setShowModal}

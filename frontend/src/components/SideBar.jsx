@@ -1,9 +1,8 @@
 import React from 'react';
-import { NavLink } from 'react-router-dom';
+import { NavLink, useLocation } from 'react-router-dom';
 import { Book, Star, Settings, Flag } from 'lucide-react';
 
 function SideBar({ isMobile }) {
-  // Always show labels on desktop; hide on mobile
   const shouldShowLabel = !isMobile;
 
   return (
@@ -16,24 +15,19 @@ function SideBar({ isMobile }) {
       `}
       aria-label="Sidebar navigation"
     >
-      {/* Top Section */}
       <div className="flex items-center justify-center py-4 border-b border-white/20">
-        <h2
-          className={`text-xl font-bold transition-all duration-300 ${
-            shouldShowLabel ? 'block' : 'hidden'
-          }`}
-        >
+        <h2 className={`text-xl font-bold transition-all duration-300 ${shouldShowLabel ? 'block' : 'hidden'}`}>
           NoteHub
         </h2>
       </div>
 
-      {/* Navigation Links */}
       <nav className="flex flex-col gap-2 p-4 text-base font-medium">
         <SidebarLink
           to="/dashboard/AllNotes"
           label="All Notes"
           icon={<Book size={20} />}
           showLabel={shouldShowLabel}
+          isActiveExtra={(pathname) => pathname === "/dashboard"}
         />
         <SidebarLink
           to="/dashboard/favorites"
@@ -47,35 +41,34 @@ function SideBar({ isMobile }) {
           icon={<Flag size={20} />}
           showLabel={shouldShowLabel}
         />
-        <SidebarLink
-          to="/dashboard/settings"
-          label="Settings"
-          icon={<Settings size={20} />}
-          showLabel={shouldShowLabel}
-        />
+      
       </nav>
     </aside>
   );
 }
 
-const SidebarLink = ({ to, label, icon, showLabel }) => (
-  <NavLink
-    to={to}
-    className={({ isActive }) =>
-      `flex items-center gap-3 px-3 py-2 rounded-lg transition-all
-      ${isActive ? 'bg-white/20 font-semibold border-l-4 border-white' : 'hover:bg-white/10'}
-      text-white`
-    }
-  >
-    <span title={label}>{icon}</span>
-    <span
-      className={`transition-all duration-200 ${
-        showLabel ? 'block' : 'hidden'
-      }`}
+const SidebarLink = ({ to, label, icon, showLabel, isActiveExtra }) => {
+  const location = useLocation();
+  const pathname = location.pathname;
+
+  return (
+    <NavLink
+      to={to}
+      className={({ isActive }) => {
+        const active = isActive || (isActiveExtra && isActiveExtra(pathname));
+        return `
+          flex items-center gap-3 px-3 py-2 rounded-lg transition-all
+          ${active ? 'bg-white/20 font-semibold border-l-4 border-white' : 'hover:bg-white/10'}
+          text-white
+        `;
+      }}
     >
-      {label}
-    </span>
-  </NavLink>
-);
+      <span title={label}>{icon}</span>
+      <span className={`transition-all duration-200 ${showLabel ? 'block' : 'hidden'}`}>
+        {label}
+      </span>
+    </NavLink>
+  );
+};
 
 export default SideBar;
